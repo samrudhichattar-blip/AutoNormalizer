@@ -1,0 +1,39 @@
+OrderID,OrderDate,CustomerID,CustomerName,City,ProductID,ProductName,UnitPrice,Quantity
+O1001,2026-09-21,C06,Imran Shaikh,Mumbai,P05,Water Bottle,350,2
+O1001,2026-09-21,C06,Imran Shaikh,Mumbai,P02,USB-C Cable,249,2
+O1002,2026-09-13,C04,Rajesh Nair,Pune,P06,Backpack,1499,3
+O1002,2026-09-13,C04,Rajesh Nair,Pune,P05,Water Bottle,350,1
+O1002,2026-09-13,C04,Rajesh Nair,Pune,P02,USB-C Cable,249,2
+O1003,2026-09-26,C01,Neha Sharma,Pune,P04,Desk Lamp,899,2
+O1003,2026-09-26,C01,Neha Sharma,Pune,P03,Notebook A5,120,3
+O1003,2026-09-26,C01,Neha Sharma,Pune,P01,Wireless Mouse,599,2
+O1004,2026-09-16,C06,Imran Shaikh,Mumbai,P06,Backpack,1499,3
+O1004,2026-09-16,C06,Imran Shaikh,Mumbai,P04,Desk Lamp,899,2
+O1004,2026-09-16,C06,Imran Shaikh,Mumbai,P02,USB-C Cable,249,2
+O1005,2026-09-18,C06,Imran Shaikh,Mumbai,P06,Backpack,1499,4
+O1005,2026-09-18,C06,Imran Shaikh,Mumbai,P05,Water Bottle,350,3
+O1005,2026-09-18,C06,Imran Shaikh,Mumbai,P04,Desk Lamp,899,2
+O1006,2026-09-17,C02,vikram singh,Mumbai,P01,Wireless Mouse,599,2
+O1006,2026-09-17,C02,Vikram Singh,Mumbai,P06,Backpack,1499,2
+O1006,2026-09-17,C02,Vikram Singh,Mumbai,P05,Water Bottle,350,4
+O1007,2026-09-03,C05,Meera Kapoor,Nagpur,P04,Desk Lamp,899,3
+O1007,2026-09-03,C05,Meera Kapoor,Nagpur,P05,Water Bottle,350,1
+O1007,2026-09-03,C05,Meera Kapoor,Nagpur,P06,Backpack,1499,1
+O1008,2026-09-18,C06,Imran Shaikh,Mumbai,P06,Backpack,1499,3
+O1008,2026-09-18,C06,Imran Shaikh,Mumbai,P03,Notebook A5,120,4
+O1008,2026-09-18,C06,Imran Shaikh,Mumbai,P01,Wireless Mouse,599,2
+O1009,2026-09-01,C04,Rajesh Nair,Pune,P05,Water Bottle,350,3
+O1009,2026-09-01,C04,Rajesh Nair,Pune,P02,USB-C Cable,249,2
+O1009,2026-09-01,C04,Rajesh Nair,Pune,P01,Wireless Mouse,599,2
+O1010,2026-09-25,C03,Anita Desai,Nashik,P05,Water Bottle,350,1
+O1010,2026-09-25,C03,Anita Desai,Nashik,P06,Backpack,1499,3
+O1011,2026-09-01,C04,Rajesh Nair,Pune,P03,Notebook A5,120,2
+O1011,2026-09-01,C04,Rajesh Nair,Pune,P06,Backpack,1499,1
+O1012,2026-09-19,C02,Vikram Singh,Mumbai,P01,Wireless Mouse,599,1
+O1012,2026-09-19,C02,Vikram Singh,Mumbai,P04,Desk Lamp,899,2
+O1013,2026-09-22,C02,Vikram Singh,Mumbai,P05,Water Bottle,350,4
+O1013,2026-09-22,C02,Vikram Singh,Mumbai,P02,USB-C Cable,249,2
+O1013,2026-09-22,C02,Vikram Singh,Mumbai,P03,Notebook A5,120,2
+O1014,2026-09-10,C06,Imran Shaikh,Mumbai,P06,Backpack,1499,4
+O1014,2026-09-10,C06,Imran Shaikh,Mumbai,P03,Notebook A5,120,1
+O1014,2026-09-10,C06,Imran Shaikh,Mumbai,P04,Desk Lamp,899,2

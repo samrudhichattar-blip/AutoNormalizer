@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+httpx
+pydantic
+pytest
+openpyxl>=3.1
+psycopg[binary]>=3.1
+pymysql>=1.1

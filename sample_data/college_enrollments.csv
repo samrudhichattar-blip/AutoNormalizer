@@ -1,0 +1,41 @@
+StudentID,StudentName,Department,CourseID,CourseName,Credits,FacultyID,FacultyName,Grade
+S101,Rahul Patil,Computer,C06,Discrete Maths,4,F04,Prof. Shah,A
+S101,Rahul Patil,Computer,C01,DBMS,4,F01,Dr. Mehta,A
+S101,Rahul Patil,Computer,C05,Python,3,F02,Prof. Iyer,A
+S101,Rahul Patil,Computer,C03,Operating Systems,4,F03,Dr. Rao,A
+S102,Priya Deshmukh,Computer,C06,Discrete Maths,4,F04,Prof. Shah,B
+S102,Priya Deshmukh,Computer,C01,DBMS,4,F01,Dr. Mehta,O
+S102,Priya Deshmukh,Computer,C05,Python,3,F02,Prof. Iyer,O
+S102,Priya Deshmukh,Computer,C03,Operating Systems,4,F03,Dr. Rao,O
+S103,Amit Kulkarni,IT,C02,Java Programming,3,F02,Prof. Iyer,A
+S103,Amit Kulkarni,IT,C06,Discrete Maths,4,F04,Prof. Shah,C
+S103,Amit Kulkarni,IT,C01,DBMS,4,F01,Dr. Mehta,C
+S103,Amit Kulkarni,IT,C03,Operating Systems,4,F03,Dr. Rao,C
+S104,Neha Joshi,IT,C05,Python,3,F02,Prof. Iyer,B
+S104,Neha Joshi,IT,C04,Computer Networks,3,F01,Dr. Mehta,A
+S104,Neha Joshi,IT,C02,Java Programming,3,F02,Prof. Iyer,O
+S104,Neha Joshi,IT,C06,Discrete Maths,4,F04,Prof. Shah,A
+S105,Sneha Pawar,Computer,C06,Discrete Maths,4,F04,Prof. Shah,A
+S105,Sneha Pawar,Computer,C04,Computer Networks,3,F01,Dr. Mehta,A
+S105,Sneha Pawar,Computer,C03,Operating Systems,4,F03,Dr. Rao,A
+S105,Sneha Pawar,Computer,C02,Java Programming,3,F02,Prof. Iyer,O
+S106,Rohan Shinde,Electronics,C01,DBMS,4,F01,Dr. Mehta,A
+S106,Rohan Shinde,Electronics,C04,Computer Networks,3,F01,Dr. Mehta,B
+S106,Rohan Shinde,Electronics,C06,Discrete Maths,4,F04,Prof. Shah,A
+S106,Rohan Shinde,Electronics,C02,Java Programming,3,F02,Prof. Iyer,O
+S107,Pooja Jadhav,IT,C06,Discrete Maths,4,F04,Prof. Shah,O
+S107,Pooja Jadhav,IT,C04,Computer Networks,3,F01,Dr. Mehta,B
+S107,Pooja Jadhav,IT,C01,DBMS,4,F01,Dr. Mehta,A
+S107,Pooja Jadhav,IT,C02,Java Programming,3,F02,Prof. Iyer,C
+S108,Aditya Gaikwad,Electronics,C05,Python,3,F02,Prof. Iyer,O
+S108,Aditya Gaikwad,Electronics,C03,Operating Systems,4,F03,Dr. Rao,O
+S108,Aditya Gaikwad,Electronics,C02,Java Programming,3,F02,Prof. Iyer,C
+S108,Aditya Gaikwad,Electronics,C06,Discrete Maths,4,F04,Prof. Shah,A
+S109,Kavya More,Computer,C03,Operating Systems,4,F03,Dr. Rao,B
+S109,Kavya More,Computer,C01,DBMS,4,F01,Dr. Mehta,A
+S109,Kavya More,Computer,C02,Java Programming,3,F02,Prof. Iyer,B
+S109,Kavya More,Computer,C05,Python,3,F02,Prof. Iyer,C
+S110,Sahil Salunkhe,IT,C03,Operating Systems,4,F03,Dr. Rao,A
+S110,Sahil Salunkhe,IT,C02,Java Programming,3,F02,Prof. Iyer,C
+S110,Sahil Salunkhe,IT,C06,Discrete Maths,4,F04,Prof. Shah,A
+S110,Sahil Salunkhe,IT,C05,Python,3,F02,Prof. Iyer,C

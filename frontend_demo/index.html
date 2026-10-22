@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoNormalizer | Database Intelligence Studio</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<style>
+  :root { --bg:#f7f8fa; --card:#fff; --text:#1c2230; --muted:#667085; --line:#e2e6ee; --accent:#3b5bdb; --ok:#1b8a4b; --bad:#c92a2a; --warn:#b7791f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14171f; --card:#1d212c; --text:#e8ebf2; --muted:#9aa3b5; --line:#2c3242; --accent:#7c93ff; --ok:#4cc27e; --bad:#ff7b7b; --warn:#e8b34f; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); }
+  main { max-width:1100px; margin:0 auto; padding:14px 16px 20px; }
+  h1 { font-size:21px; margin:0; } h2 { font-size:18px; margin:0 0 4px; } h3 { font-size:14px; margin:12px 0 6px; }
+  .sub { color:var(--muted); margin:2px 0 10px; font-size:14px; }
+  #steps { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .pill { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:4px 12px; font-size:13px; cursor:pointer; margin:0; }
+  .pill.done { color:var(--ok); border-color:var(--ok); } .pill.on { background:var(--accent); color:#fff; border-color:var(--accent); } .pill:disabled { opacity:.45; cursor:default; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .page { display:none; height:calc(100vh - 235px); min-height:320px; overflow:auto; padding-right:6px; }
+  .page.active { display:block; }
+  .lead { color:var(--muted); margin:0 0 10px; }
+  textarea { width:100%; height:150px; font:13px ui-monospace,Consolas,monospace; background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:8px 14px; font:inherit; cursor:pointer; margin:6px 6px 0 0; }
+  button.sec { background:transparent; color:var(--accent); border:1px solid var(--accent); } button.sec.on { background:var(--accent); color:#fff; }
+  button:disabled { opacity:.5; cursor:wait; }
+  table { border-collapse:collapse; width:100%; font-size:13px; } th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .badge { display:inline-block; padding:1px 8px; border-radius:999px; font-size:12px; border:1px solid currentColor; }
+  .supported,.ok { color:var(--ok); } .contradicted,.bad { color:var(--bad); } .approximate,.trivial,.warn { color:var(--warn); }
+  pre { background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:10px; overflow:auto; font-size:12px; margin:6px 0; max-height:340px; }
+  .muted { color:var(--muted); } .row { display:flex; gap:18px; flex-wrap:wrap; } .row > div { flex:1 1 320px; min-width:0; }
+  input[type=text], select { background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:5px 8px; font:inherit; }
+  .nav { display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); margin-top:12px; padding-top:10px; }
+  .nav button { margin:0; padding:9px 20px; } #err { min-height:20px; margin-top:6px; }
+  #er svg, #er4 svg { max-width:100%; height:auto; }
+
+  /* Full-window workspace */
+  :root { --bg:#080d1a; --card:#101a2d; --text:#edf3ff; --muted:#9aaaca; --line:#263653; --accent:#7c5cff; --ok:#39dba7; --bad:#ff6f91; --warn:#ffca72; }
+  html,body{width:100%;height:100%;min-height:100%} body{margin:0;overflow:hidden;background:radial-gradient(ellipse at 12% -15%,rgba(93,73,255,.22),transparent 42%),radial-gradient(ellipse at 100% 0%,rgba(22,190,210,.12),transparent 36%),var(--bg);color:var(--text);letter-spacing:.01em}
+  main{width:100%;max-width:none;height:100dvh;margin:0;padding:0;display:flex;flex-direction:column}.topbar{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 26px;border-bottom:1px solid #263653;background:rgba(8,13,26,.9)}.brand{display:flex;align-items:center;gap:14px;min-width:260px}h1{font-size:clamp(23px,2.2vw,32px);font-weight:850;letter-spacing:-.045em;margin:0;background:linear-gradient(95deg,#fff 15%,#b9c5ff 55%,#73e5e3);color:transparent;background-clip:text}.brandmark{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(135deg,#7658ff,#20c5d4);color:white;font-size:22px;box-shadow:0 8px 25px #5944d544}.sub{color:var(--muted);margin:4px 0 0;font-size:12px}.statusbar{display:flex;align-items:center;gap:9px;color:#9aaaca;font-size:12px;white-space:nowrap}.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#39dba7;box-shadow:0 0 12px #39dba7}
+  #steps{display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;padding:10px 22px;margin:0;border-bottom:1px solid #263653;background:rgba(13,21,38,.9)}.pill{flex:0 0 auto;background:transparent;color:#9aaaca;border:1px solid transparent;border-radius:10px;padding:10px 15px;font-size:13px;cursor:pointer;margin:0;transition:all .18s}.pill:hover{color:#fff;background:#ffffff09;border-color:#344565}.pill.done{color:var(--ok)}.pill.on{background:linear-gradient(110deg,#7357ff,#4d7dff);color:#fff;border-color:transparent;box-shadow:0 6px 22px #6550ff38}.pill:disabled{opacity:1;cursor:pointer}
+  .card{flex:1;min-height:0;width:100%;overflow:hidden;background:transparent;border:0;border-radius:0;padding:0;box-shadow:none;display:flex;flex-direction:column}.page{display:none;flex:1;min-height:0;overflow:auto;padding:24px clamp(18px,3vw,42px) 30px;height:auto}.page.active{display:block;animation:fadeIn .22s ease}@keyframes fadeIn{from{opacity:.65;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}h2{font-size:clamp(20px,2vw,27px);letter-spacing:-.025em;margin:0 0 8px}h3{font-size:14px;letter-spacing:.02em;margin:20px 0 8px;color:#c7d4f5}.lead{color:var(--muted);margin:0 0 16px;font-size:14px}.page>textarea{min-height:250px;height:34vh}textarea{width:100%;font:13px/1.6 ui-monospace,Consolas,monospace;background:#0b1323;color:var(--text);border:1px solid #344565;border-radius:13px;padding:14px;resize:vertical}
+  button{border-radius:10px;padding:10px 16px;font-weight:650;background:linear-gradient(115deg,#7658ff,#4f7cff);border:1px solid transparent;color:#fff;cursor:pointer;margin:6px 6px 0 0;box-shadow:0 5px 16px #6054ff2e;transition:transform .18s,filter .18s}button:hover{transform:translateY(-1px);filter:brightness(1.08)}button.sec{background:#ffffff09;color:#b8c7ff;border:1px solid #394b72;box-shadow:none}button.sec.on{background:var(--accent);color:#fff}button:disabled{opacity:.5;cursor:wait}input[type=text],input[type=file],select{max-width:100%;background:#0b1323;color:var(--text);border:1px solid #344565;border-radius:10px;padding:9px 11px;font:inherit}textarea:focus,input:focus,select:focus{outline:2px solid #7c5cff59;border-color:#8d79ff}
+  table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px;overflow:hidden;border:1px solid var(--line);border-radius:12px}th,td{text-align:left;padding:10px 12px;border-bottom:1px solid #90a9d81f;vertical-align:top}th{background:#17243c;color:#d7e1ff;font-weight:650;position:sticky;top:0}tr:last-child td{border-bottom:0}tr:hover td{background:#7c5cff0b}.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;border:1px solid currentColor}.supported,.ok{color:var(--ok)}.contradicted,.bad{color:var(--bad)}.approximate,.trivial,.warn{color:var(--warn)}pre{background:#0b1323;color:#dce6ff;border:1px solid #2b3d5d;border-radius:12px;padding:12px;overflow:auto;font-size:12px;margin:8px 0;max-height:none;white-space:pre-wrap}.muted{color:var(--muted)}.row{display:flex;gap:18px;flex-wrap:wrap}.row>div{flex:1 1 360px;min-width:0}.nav{display:none}#err{color:#ff8fa8;min-height:20px;padding:0 26px 10px;margin:0}#er svg,#er4 svg{max-width:100%;height:auto}.workspace-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.metric-strip{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px;margin:16px 0}.metric{padding:14px 16px;border:1px solid #2a3b5a;border-radius:14px;background:linear-gradient(145deg,#14213a,#0d1729)}.metric strong{display:block;font-size:22px;color:#fff;letter-spacing:-.03em}.metric span{font-size:12px;color:var(--muted)}.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}#dataPreview{max-height:230px;overflow:auto;margin-top:12px}
+  @media(max-width:760px){body{overflow:auto}main{height:auto;min-height:100dvh}.topbar{padding:12px 14px;min-height:70px}.brand{min-width:0}.statusbar{display:none}#steps{padding:8px 10px}.pill{padding:9px 11px;font-size:12px}.page{padding:18px 14px 24px;min-height:calc(100dvh - 130px);overflow:visible}.metric-strip{grid-template-columns:repeat(2,minmax(120px,1fr))}.page>textarea{height:240px}}
+
+
+
+  /* Dedicated authentication gate: workspace is inaccessible until sign-in */
+  body:not(.authenticated) main{display:none!important}
+  #authGate{display:none;min-height:100dvh;padding:28px;align-items:center;justify-content:center;background:radial-gradient(ellipse at 15% 10%,rgba(93,73,255,.24),transparent 42%),radial-gradient(ellipse at 95% 5%,rgba(22,190,210,.16),transparent 36%),#080d1a;color:#edf3ff}
+  body:not(.authenticated) #authGate{display:flex}
+  .auth-shell{width:min(100%,980px);min-height:560px;display:grid;grid-template-columns:1.05fr .95fr;border:1px solid #263653;border-radius:26px;overflow:hidden;background:#0d1729;box-shadow:0 28px 90px #0008}
+  .auth-brand{padding:48px;background:linear-gradient(145deg,#141f3c,#0b1323);display:flex;flex-direction:column;justify-content:space-between}
+  .auth-brand h1{font-size:clamp(30px,4vw,48px);margin:22px 0 12px}.auth-brand p{color:#a8badb;max-width:400px}
+  .auth-form{padding:42px;display:flex;flex-direction:column;justify-content:center}.auth-form h2{font-size:28px;margin-bottom:8px}.auth-form .lead{margin-bottom:22px}
+  .auth-form input{width:100%;padding:13px 14px;margin:7px 0 10px;background:#080f1e;border:1px solid #344565;border-radius:10px;color:#edf3ff;font:inherit}
+  .auth-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}.auth-actions button{flex:1}
+  #gateStatus{min-height:24px;color:#ff9ab0;margin-top:14px;font-size:13px}
+  .auth-foot{color:#8295b8;font-size:12px;margin-top:22px}
+  .account-panel{padding:18px 26px;border-bottom:1px solid #263653;background:#0c1425;max-height:45vh;overflow:auto}
+  .nav{display:flex;position:sticky;bottom:0;z-index:5;background:#0b1323;border-top:1px solid #263653;padding:12px 26px;margin:0;}
+  @media(max-width:760px){#authGate{padding:12px}.auth-shell{grid-template-columns:1fr;min-height:0}.auth-brand{padding:24px}.auth-brand p{display:none}.auth-form{padding:24px}.auth-brand h1{font-size:30px}.nav{padding:10px 14px}}
+
+</style>
+</head>
+<body>
+<section id="authGate" aria-label="Sign in to AutoNormalizer">
+  <div class="auth-shell">
+    <div class="auth-brand"><div><div class="brandmark">A</div><h1>AutoNormalizer</h1><p>Database engineering workspace. Import your data, discover dependencies, normalize schemas, and review SQL—all in one guided flow.</p></div><div class="auth-foot">Private workspace · Sign in to continue to your projects</div></div>
+    <div class="auth-form"><h2 id="gateTitle">Welcome back</h2><p class="lead" id="gateSubtitle">Sign in or create an account to open your workspace.</p>
+      <label for="gateEmail">Email address</label><input id="gateEmail" type="email" autocomplete="username" placeholder="you@example.com" required>
+      <label for="gatePassword">Password</label><input id="gatePassword" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+      <div class="auth-actions"><button onclick="gateAuth('login')">Sign in</button><button class="sec" onclick="gateAuth('signup')">Create account</button></div>
+      <div id="gateStatus" role="status"></div><div class="auth-foot">Your database workspace will open only after successful sign-in.</div>
+    </div>
+  </div>
+</section>
+<main>
+  <header class="topbar"><div class="brand"><div class="brandmark">A</div><div><h1>AutoNormalizer</h1><div class="sub">DATABASE INTELLIGENCE STUDIO · Deterministic DB design, AI-assisted explanations</div></div></div><div class="statusbar"><span class="live-dot"></span> Local workspace <span>·</span> Source data stays in this session</div><div class="workspace-tools"><button class="sec" onclick="openAccount()">Account / Sign in</button><button class="sec" onclick="clearWorkspace()">Clear workspace</button></div></header>
+  <section id="accountPanel" class="account-panel" style="display:none">
+    <div class="section-head"><div><h2>Account &amp; saved workspaces</h2><p class="lead">Create an account or sign in to save projects on this computer.</p></div><button class="sec" onclick="closeAccount()">Close</button></div>
+    <div class="row"><div style="display:none"><input id="authEmail" type="email"><input id="authPassword" type="password"><p id="authStatus" class="muted">Signed in</p></div>
+    <div><h3>Persistent projects</h3><input id="workspaceName" type="text" placeholder="Workspace name"><button onclick="saveWorkspace()">Save current project</button><button class="sec" onclick="loadWorkspaces()">Refresh list</button><div id="workspaceList" class="muted">Sign in to see saved workspaces.</div></div></div>
+  </section>
+  <nav id="steps" aria-label="Workspace navigation"></nav>
+  <div class="card">
+    <!-- 1 -->
+    <div class="page" id="p1">
+      <div class="section-head"><div><h2>Data workspace</h2><p class="lead">Import a real dataset, inspect its shape, then generate a verified relational design.</p></div><div class="workspace-tools"><button onclick="analyzeFromWorkspace()">Profile data &amp; detect rules →</button><button class="sec" onclick="previewData()">Preview rows</button></div></div>
+      <div class="metric-strip"><div class="metric"><strong id="metricRows">—</strong><span>Rows detected</span></div><div class="metric"><strong id="metricCols">—</strong><span>Columns detected</span></div><div class="metric"><strong id="metricNulls">—</strong><span>Empty cells</span></div><div class="metric"><strong id="metricDupes">—</strong><span>Duplicate rows</span></div></div>
+      <textarea id="csv" placeholder="Paste CSV here (first row = column names)"></textarea><div id="dataPreview"></div>
+      <div><label for="file" class="muted">Import CSV or Excel workbook (.xlsx)</label><br><input type="file" id="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"><span id="importStatus" class="muted"></span></div>
+      <div>
+        <button class="sec" onclick="sample('enrol')">Sample: enrollments</button>
+        <button class="sec" onclick="sample('ctb')">Sample: course / teacher / book</button>
+        <label class="muted" style="margin-left:8px"><input type="checkbox" id="useAi" checked> use AI (falls back to templates if no API key)</label>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="page" id="p2">
+      <div class="section-head"><div><h2>Dependency explorer</h2><p class="lead">Review suggested functional dependencies and select the business rules that should always hold.</p></div><button onclick="normalizeNow()">Normalize schema →</button></div><div id="sum" class="lead"></div>
+      <table id="fdTable"></table>
+      <div class="muted" style="margin-top:6px">Tick only the rules that are real business rules. Data can show that a rule <i>holds</i> in these rows; you decide whether it must hold always.</div>
+      <h3>Which columns identify a row? (the key)</h3><div id="keys"></div>
+      <h3>Decompose to</h3>
+      <label><select id="target"><option>3NF</option><option>BCNF</option></select></label>
+    </div>
+
+    <!-- 3 -->
+    <div class="page" id="p3">
+      <h2>Normalization results</h2><div id="summary" class="lead"></div>
+      <div class="row"><div><h3>Violations found</h3><div id="viol"></div></div><div><h3>New tables</h3><div id="tables"></div></div></div>
+      <h3>Proof on your actual data</h3><div id="recon"></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="page" id="p4">
+      <h2>Schema designer · ER diagram &amp; SQL</h2>
+      <details class="feature-panel"><summary>Connect to MySQL / PostgreSQL (optional)</summary><p class="muted">Credentials are used for this request only and are not saved in your workspace. Use a read-only database user.</p>
+      <div class="row"><div><label>Engine</label><select id="dbEngine"><option value="postgresql">PostgreSQL</option><option value="mysql">MySQL</option></select><label>Host</label><input id="dbHost" type="text" value="localhost"><label>Port</label><input id="dbPort" type="text" placeholder="default"><label>Database</label><input id="dbName" type="text"><label>Username</label><input id="dbUser" type="text"><label>Password</label><input id="dbPassword" type="password"><label><input id="dbSsl" type="checkbox" checked> Require SSL</label><button onclick="testDb()">Test connection</button><span id="dbStatus" class="muted"></span></div></div></details>
+      <div class="row">
+        <div><div id="er"></div></div>
+        <div>
+          <label>SQL dialect: <select id="dialect"><option value="postgresql">PostgreSQL</option><option value="mysql">MySQL</option><option value="oracle">Oracle</option></select></label>
+          <button id="btnZip" onclick="downloadZip()">Download data + SQL (ZIP)</button>
+          <div id="zipMsg"></div>
+          <pre id="ddl"></pre>
+          <div class="muted">ZIP = one CSV per table + schema.sql (CREATE, INSERT rows, foreign keys).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="page" id="p5">
+      <h2>AI schema copilot &amp; explanation <span id="exSrc" class="badge"></span></h2>
+      <div class="feature-panel"><p class="muted">Grounded, rule-based suggestions; actions require your confirmation and never run DDL automatically.</p><div class="row"><div><input id="copilotQuestion" type="text" placeholder="Ask about normalization, dependencies, data quality…" style="width:100%"><button onclick="askCopilot()">Ask schema copilot</button><div id="copilotAnswer"></div></div></div></div>
+      <div><button class="sec on" id="tabMain" onclick="exTab('Main')">What is wrong</button><button class="sec" id="tabSteps" onclick="exTab('Steps')">How it was fixed</button><button class="sec" id="tabViva" onclick="exTab('Viva')">Viva questions</button></div>
+      <div id="exMain"></div><div id="exSteps" style="display:none"></div><div id="exViva" style="display:none"></div>
+    </div>
+
+    <!-- 6 -->
+    <div class="page" id="p6">
+      <h2>4NF analysis · Multivalued dependencies</h2>
+      <div id="mvdNone" class="lead">No multivalued dependency was found in your data, so there is nothing to split for 4NF. Try the sample "course / teacher / book".</div>
+      <div id="mvdBox" style="display:none"><p class="lead">These hold in your data and are not plain FDs. Untick any that are not real rules.</p>
+        <div id="mvdList"></div><button id="btn4nf" onclick="run4nf()">Decompose to 4NF</button></div>
+      <div id="r4nf"></div>
+    </div>
+
+    <!-- 7 -->
+    <div class="page" id="p7">
+      <h2>What-if lab · Safely test schema changes</h2><p class="lead">Try a change on a copy of the schema. Your original is never touched.</p>
+      <div id="wiFds"></div>
+      <div style="margin-top:8px">Add FD: <input type="text" id="wiL" placeholder="left, e.g. StudentID" size="16"> &rarr; <input type="text" id="wiR" placeholder="right, e.g. Grade" size="16">
+        <button class="sec" onclick="addWi()">Add to what-if</button></div>
+      <div id="wiChanges" class="muted"></div><button onclick="runWhatIf()">Run what-if</button><div id="wiOut"></div>
+    </div>
+
+    <div id="err" class="bad"></div>
+    <div class="page" id="p8"><div style="max-width:900px;margin:8vh auto;text-align:center"><div class="brandmark" style="margin:0 auto 20px;width:64px;height:64px;font-size:30px">✓</div><h2 style="font-size:clamp(30px,4vw,48px)">Thank you for using AutoNormalizer</h2><p class="lead" style="font-size:16px">Your schema. Your rules. Verified transformations.</p><p class="muted">Review the generated SQL and reconstruction checks before using it in production. Keep database credentials private and use least-privilege accounts.</p><button onclick="show(1)">Back to workspace</button><button class="sec" onclick="openAccount()">Save project</button></div></div>
+    <div class="nav"><button class="sec" id="btnBack" onclick="back()">&larr; Back</button><span id="stepLabel" class="muted"></span><button id="btnNext" onclick="nextClick()">Next</button></div>
+  </div>
+</main>
+
+<script>
+const STEPS = ["Data Workspace", "Dependencies", "Normalization", "ER & SQL", "AI Copilot", "4NF Analysis", "What-if Lab", "Thank you"];
+const SAMPLES = {
+  enrol: "sid,sname,cid,cname,grade\n101,Rahul,C01,DBMS,A\n101,Rahul,C02,Java,B\n102,Priya,C01,DBMS,A\n103,Amit,C02,Java,C\n103,Amit,C01,DBMS,B\n102,Priya,C02,Java,A\n104,Neha,C01,DBMS,A\n104,Neha,C02,Java,B",
+  ctb: "course,teacher,book\nDBMS,Rao,Silberschatz\nDBMS,Rao,Elmasri\nDBMS,Iyer,Silberschatz\nDBMS,Iyer,Elmasri\nOS,Shah,Silberschatz\nOS,Shah,Galvin\nOS,Iyer,Silberschatz\nOS,Iyer,Galvin\nAI,Nair,Russell\nAI,Rao,Russell"
+};
+let step = 1, reached = 1, lastExport = null, cols = [], cands = [], keyCands = [], currentFds = [], whatChanges = [], mvdCands = [], mermaidN = 0;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fdText = f => f.lhs.join(", ") + " \u2192 " + f.rhs.join(", ");
+
+/* ---------- workspace navigation ---------- */
+$("steps").innerHTML = STEPS.map((label, i) => `<button class="pill" id="pill${i + 1}" onclick="go(${i + 1})">${esc(label)}</button>`).join("");
+function show(n) {
+  step = n;
+  document.querySelectorAll(".page").forEach((p, i) => p.classList.toggle("active", i + 1 === n));
+  STEPS.forEach((_, i) => { const b = $("pill" + (i + 1)); b.classList.toggle("on", i + 1 === n); b.classList.toggle("done", i + 1 < n && reached >= i + 1); b.disabled = false; });
+  $("err").textContent = ""; const active = document.querySelector(".page.active"); if (active) active.scrollTop = 0;
+}
+function go(n) {
+  if (n > reached + 1) { $("err").textContent = "Complete the current step and use Next to continue."; return; }
+  show(n);
+}
+function back() { show(Math.max(1, step - 1)); }
+async function nextClick() { if (step === 1) { if (await profile()) { reached = Math.max(reached, 2); show(2); } } else if (step === 2) { if (await analyze()) { reached = 7; show(3); } } else show(step >= 8 ? 1 : step + 1); }
+async function analyzeFromWorkspace() { if (await profile()) { reached = Math.max(reached, 2); show(2); } }
+async function normalizeNow() { if (await analyze()) { reached = 7; show(3); } }
+function clearWorkspace() {
+  $("csv").value = ""; $("file").value = ""; cols = []; cands = []; keyCands = []; currentFds = []; whatChanges = []; lastExport = null; reached = 1;
+  ["sum","fdTable","keys","summary","viol","tables","recon","er","ddl","exMain","exSteps","exViva","mvdList","r4nf","wiFds","wiOut","wiChanges","dataPreview"].forEach(id => { if ($(id)) $(id).innerHTML = ""; });
+  ["metricRows","metricCols","metricNulls","metricDupes"].forEach(id => { if ($(id)) $(id).textContent = "—"; }); show(1);
+}
+
+/* ---------- server calls ---------- */
+async function call(path, body, btn) {
+  $("err").textContent = ""; if (btn) btn.disabled = true;
+  try {
+    const r = await fetch("/plus" + path, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body)});
+    const j = await r.json();
+    if (!r.ok) throw new Error(typeof j.detail === "string" ? j.detail : (j.detail && j.detail.message) || r.statusText);
+    return j;
+  } catch (e) { $("err").textContent = "Error: " + e.message; throw e; }
+  finally { if (btn) btn.disabled = false; }
+}
+function sample(k) { $("csv").value = SAMPLES[k]; previewData(); }
+$("file").addEventListener("change", async e => {
+  const f=e.target.files[0]; if(!f) return;
+  if(f.name.toLowerCase().endsWith(".xlsx")) {
+    const token=localStorage.getItem("an_token"); if(!token){$("importStatus").textContent=" Sign in to import XLSX."; return;}
+    const b64=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result).split(",")[1]);r.onerror=reject;r.readAsDataURL(f);});
+    try { const r=await fetch("/api/import/xlsx",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer "+token},body:JSON.stringify({content_base64:b64})}); const j=await r.json(); if(!r.ok) throw Error(j.detail||"Import failed"); $("csv").value=j.csv_text; $("importStatus").textContent=` Imported ${j.row_count} rows from ${j.sheet}.`; previewData(); } catch(err){$("importStatus").textContent=" "+err.message;}
+  } else { $("csv").value=await f.text(); $("importStatus").textContent=" CSV loaded."; previewData(); }
+});
+function parseCsvPreview(text) { const rows=[];let row=[],cell="",quoted=false;for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c==='"'&&quoted&&n==='"'){cell+='"';i++;}else if(c==='"')quoted=!quoted;else if(c===","&&!quoted){row.push(cell);cell="";}else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&n==="\n")i++;row.push(cell);if(row.some(v=>v.trim()))rows.push(row);row=[];cell="";}else cell+=c;}row.push(cell);if(row.some(v=>v.trim()))rows.push(row);return rows;}
+function previewData(){const raw=$("csv").value.trim();if(!raw){$("err").textContent="Paste a CSV or choose a sample dataset first.";return;}const rows=parseCsvPreview(raw),headers=rows[0]||[],body=rows.slice(1),width=headers.length;const nulls=body.reduce((n,r)=>n+headers.reduce((m,_,i)=>m+(!String(r[i]||"").trim()?1:0),0),0);const seen=new Set();let dupes=0;body.forEach(r=>{const k=JSON.stringify(r);if(seen.has(k))dupes++;else seen.add(k);});$("metricRows").textContent=body.length.toLocaleString();$("metricCols").textContent=width.toLocaleString();$("metricNulls").textContent=nulls.toLocaleString();$("metricDupes").textContent=dupes.toLocaleString();$("dataPreview").innerHTML=`<div class="muted" style="margin:8px 0">Preview · ${Math.min(body.length,8)} of ${body.length} data rows</div><table><thead><tr>${headers.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${body.slice(0,8).map(r=>`<tr>${headers.map((_,i)=>`<td>${esc(r[i]||"")||'<span class="warn">∅ empty</span>'}</td>`).join("")}</tr>`).join("")}</tbody></table>`;}
+
+
+/* ---------- step 1 -> 2 ---------- */
+async function profile() {
+  let j;
+  try { j = await call("/profile", {csv_text: $("csv").value, use_ai: $("useAi").checked}, $("btnNext")); } catch (e) { return false; }
+  cols = j.columns; cands = j.fd_suggestions.candidates; keyCands = j.key_candidates; const s = j.fd_suggestions.summary;
+  $("sum").innerHTML = `${j.row_count} rows, ${cols.length} columns. Suggestions by <b>${esc(j.fd_suggestions.ai_source)}</b>: `
+    + `AI proposed ${s.proposed_by_ai}, <span class="bad">${s.contradicted_by_data} contradicted by your data</span>, ${s.rejected_invalid} rejected as invalid, ${s.supported_by_data} supported.`;
+  $("fdTable").innerHTML = "<tr><th></th><th>Dependency</th><th>Source</th><th>Status</th><th>Evidence</th></tr>" + cands.map((c, i) => {
+    const ev = c.status === "contradicted" || c.status === "approximate"
+      ? `${c.violating_groups} conflicting group(s), ${(c.error_rate * 100).toFixed(1)}% rows off. e.g. ` + esc(JSON.stringify(c.examples[0] || {}))
+      : c.status === "trivial" ? "left side is unique in this data, so it proves nothing" : `holds in all rows (${c.repeated_groups} repeated group(s))`;
+    return `<tr><td><input type="checkbox" id="fd${i}" ${c.recommended ? "checked" : ""} ${c.status === "contradicted" || c.status === "trivial" ? "disabled" : ""}></td>`
+      + `<td>${esc(fdText(c))}</td><td>${esc(c.source)}</td><td><span class="badge ${c.status}">${c.status}</span></td><td>${ev}</td></tr>`;
+  }).join("");
+  $("keys").innerHTML = keyCands.map((k, i) => `<label><input type="radio" name="key" value="${i}" ${k.recommended ? "checked" : ""}> {${esc(k.columns.join(", "))}}</label><br>`).join("")
+    + `<label><input type="radio" name="key" value="none" ${keyCands.length ? "" : "checked"}> none (decide later)</label>`
+    + `<div class="muted">Smallest column sets that are unique in your rows. The key lets the tool see that e.g. (StudentID, CourseID) &rarr; Grade.</div>`;
+  return true;
+}
+
+const picked = () => {
+  const out = cands.filter((c, i) => $("fd" + i) && $("fd" + i).checked).map(c => ({lhs: c.lhs, rhs: c.rhs}));
+  const sel = document.querySelector("input[name=key]:checked");
+  if (sel && sel.value !== "none") { const k = keyCands[+sel.value].columns, rest = cols.filter(c => !k.includes(c)); if (rest.length) out.push({lhs: k, rhs: rest}); }
+  return out;
+};
+
+async function renderEr(el, mermaidText) {
+  try { const {svg} = await mermaid.render("er" + (++mermaidN), mermaidText); el.innerHTML = svg; }
+  catch (e) { el.innerHTML = "<div class='warn'>Diagram could not be drawn; Mermaid source:</div><pre>" + esc(mermaidText) + "</pre>"; }
+}
+function relTables(er) {
+  return er.entities.map(e => `<div><b>${esc(e.name)}</b> (${e.attributes.map(a => (a.pk ? "<u>" + esc(a.name) + "</u>" : esc(a.name)) + (a.fk ? "*" : "")).join(", ")})</div>`).join("")
+    + (er.relationships.length ? "<div class='muted'>" + er.relationships.map(r => `${esc(r.from)} &rarr; ${esc(r.to)} (${esc(r.columns.join(", "))}, ${r.cardinality})`).join("<br>") + "</div>" : "");
+}
+function reconHtml(r) {
+  if (!r) return "<span class='muted'>no data provided</span>";
+  if (r.lossless === null) return `<span class="warn">${esc(r.error)}</span>`;
+  return r.lossless ? `<span class="ok"><b>Lossless on your data:</b></span> joining the new tables gives back exactly the ${r.original_distinct_rows} original distinct rows.`
+    : `<span class="bad"><b>Not lossless on your data:</b></span> ${r.spurious_rows} invented row(s), ${r.missing_rows} missing. e.g. ${esc(JSON.stringify(r.spurious_examples[0] || r.missing_examples[0] || {}))}`;
+}
+
+/* ---------- step 2 -> 3..5 ---------- */
+async function analyze() {
+  currentFds = picked(); whatChanges = [];
+  let j;
+  try { j = await call("/analyze", {csv_text: $("csv").value, fds: currentFds, target: $("target").value, use_ai: $("useAi").checked, dialect: $("dialect").value}, $("btnNext")); } catch (e) { return false; }
+  const a = j.analysis; lastExport = {relations: j.relations, names: j.table_names.names}; $("zipMsg").innerHTML = "";
+  $("summary").innerHTML = `Normal form: <b>${a.normal_form}</b>. Candidate key(s): ${a.candidate_keys.map(k => "{" + esc(k.join(", ")) + "}").join(" or ")}. Minimal cover: ${a.minimal_cover.map(esc).join("; ") || "none"}`;
+  $("viol").innerHTML = a.violations.length ? a.violations.map(v => `<div><b>${esc(v.fd)}</b><br><span class="muted">${esc(v.type)}, breaks ${v.breaks}</span></div>`).join("") : "<span class='ok'>No violations.</span>";
+  $("tables").innerHTML = relTables(j.er) + `<div class="muted" style="margin-top:6px">Names by: ${esc(j.table_names.source)}</div>`;
+  $("recon").innerHTML = reconHtml(j.reconstruction);
+  await renderEr($("er"), j.mermaid); $("ddl").textContent = j.ddl;
+  const x = j.explanation; $("exSrc").textContent = x.source === "llm" ? "AI: " + (x.model || "") : "template (no AI key)"; $("exSrc").className = "badge " + (x.source === "llm" ? "ok" : "warn");
+  $("exMain").innerHTML = `<p>${esc(x.summary)}</p>` + x.violations.map(v => `<p><b>${esc(v.fd)}</b><br>${esc(v.explanation)}<br><span class="muted">${esc(v.example || "")}</span></p>`).join("");
+  $("exSteps").innerHTML = "<ol>" + x.decomposition.map(s => `<li>${esc(s)}</li>`).join("") + "</ol>";
+  $("exViva").innerHTML = "<ul>" + x.viva_questions.map(q => `<li>${esc(q)}</li>`).join("") + "</ul>";
+  exTab("Main");
+  mvdCands = j.mvd_candidates || [];
+  $("mvdNone").style.display = mvdCands.length ? "none" : ""; $("mvdBox").style.display = mvdCands.length ? "" : "none";
+  $("mvdList").innerHTML = mvdCands.map((m, i) => `<label><input type="checkbox" id="mvd${i}" checked> ${esc(m.lhs.join(", "))} \u21A0 ${esc(m.rhs.join(", "))} | ${esc(m.complement.join(", "))}</label> <span class="muted">(${m.informative_groups} groups where both sides vary)</span><br>`).join("");
+  $("r4nf").innerHTML = "";
+  renderWhatIfFds(); $("wiOut").innerHTML = ""; $("wiChanges").textContent = "";
+  return true;
+}
+function exTab(name) { ["Main", "Steps", "Viva"].forEach(n => { $("ex" + n).style.display = n === name ? "" : "none"; $("tab" + n).classList.toggle("on", n === name); }); }
+$("dialect").addEventListener("change", () => { if (reached >= 3) analyze(); });
+
+async function downloadZip() {
+  $("zipMsg").innerHTML = "";
+  const r = await fetch("/plus/export", {method: "POST", headers: {"content-type": "application/json"},
+    body: JSON.stringify({csv_text: $("csv").value, fds: currentFds, relations: lastExport.relations, names: lastExport.names, dialect: $("dialect").value})});
+  if (!r.ok) {
+    const j = await r.json(), d = j.detail || {};
+    const first = d.conflicts && d.conflicts[0], ex = first && first.examples[0];
+    $("zipMsg").innerHTML = `<div class="bad"><b>Not exported.</b> ${esc(typeof d === "string" ? d : d.message || r.statusText)}</div>`
+      + (first ? `<div class="muted">Table <b>${esc(first.table)}</b>, key ${esc(JSON.stringify(ex.key))} appears with different values:<br>${ex.variants.map(v => esc(JSON.stringify(v))).join("<br>")}</div>` : "");
+    return;
+  }
+  const a = document.createElement("a"); a.href = URL.createObjectURL(await r.blob()); a.download = "normalized_database.zip"; a.click();
+  $("zipMsg").innerHTML = "<span class='ok'>Downloaded normalized_database.zip</span>";
+}
+
+/* ---------- step 6 ---------- */
+async function run4nf() {
+  const mv = mvdCands.filter((m, i) => $("mvd" + i).checked).map(m => ({lhs: m.lhs, rhs: m.rhs}));
+  let j;
+  try { j = await call("/4nf", {csv_text: $("csv").value, fds: currentFds, mvds: mv, use_ai: $("useAi").checked, dialect: $("dialect").value}, $("btn4nf")); } catch (e) { return; }
+  $("r4nf").innerHTML = "<h3>Violations</h3>" + (j.violations_before.map(v => `<div>${esc(v.kind)}: ${esc(v.lhs.join(", "))} ${v.kind === "MVD" ? "\u21A0" : "\u2192"} ${esc(v.rhs.join(", "))}</div>`).join("") || "none")
+    + "<h3>Steps</h3><ol>" + j.steps.map(s => `<li>${esc(s)}</li>`).join("") + "</ol><div class='row'><div><h3>Tables</h3>" + relTables(j.er) + "<h3>Proof on your data</h3>" + reconHtml(j.reconstruction) + "</div><div id='er4'></div></div>";
+  await renderEr($("er4"), j.mermaid);
+}
+
+/* ---------- step 7 ---------- */
+function renderWhatIfFds() {
+  $("wiFds").innerHTML = currentFds.length ? currentFds.map((f, i) => `<div>${esc(fdText(f))} <button class="sec" onclick="removeWi(${i})">remove in what-if</button></div>`).join("") : "<span class='muted'>no FDs selected</span>";
+}
+function removeWi(i) { whatChanges.push({op: "remove_fd", lhs: currentFds[i].lhs, rhs: currentFds[i].rhs}); showChanges(); }
+function addWi() {
+  const l = $("wiL").value.split(",").map(s => s.trim()).filter(Boolean), r = $("wiR").value.split(",").map(s => s.trim()).filter(Boolean);
+  if (l.length && r.length) { whatChanges.push({op: "add_fd", lhs: l, rhs: r}); showChanges(); }
+}
+function showChanges() { $("wiChanges").innerHTML = "Pending: " + whatChanges.map(c => esc(c.op + " " + c.lhs.join(",") + " -> " + c.rhs.join(","))).join("; "); }
+async function runWhatIf() {
+  let j;
+  try { j = await call("/whatif", {attributes: cols, fds: currentFds, changes: whatChanges}); } catch (e) { return; }
+  const b = j.before, a = j.after;
+  $("wiOut").innerHTML = "<ul>" + j.diff.summary.map(s => `<li>${esc(s)}</li>`).join("") + "</ul>"
+    + `<div class="row"><div><h3>Before</h3>${b.normal_form}, keys: ${b.candidate_keys.map(k => "{" + esc(k.join(",")) + "}").join(" ")}<br>3NF tables: ${b.decomposition_3nf.relations.map(r => "(" + esc(r.join(",")) + ")").join(" ")}</div>`
+    + `<div><h3>After</h3>${a.normal_form}, keys: ${a.candidate_keys.map(k => "{" + esc(k.join(",")) + "}").join(" ")}<br>3NF tables: ${a.decomposition_3nf.relations.map(r => "(" + esc(r.join(",")) + ")").join(" ")}</div></div>`;
+}
+
+
+function openAccount(){ $("accountPanel").style.display="block"; loadWorkspaces(); }
+function closeAccount(){ $("accountPanel").style.display="none"; }
+function authToken(){return localStorage.getItem("an_token")||"";}
+async function authAction(kind){
+ const email=$("authEmail").value.trim(), password=$("authPassword").value;
+ try{
+  const r=await fetch("/api/auth/"+kind,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email,password})});
+  const j=await r.json(); if(!r.ok)throw Error(j.detail||"Authentication failed");
+  localStorage.setItem("an_token",j.token);localStorage.setItem("an_email",j.user.email);
+  $("authStatus").textContent="Signed in as "+j.user.email;document.body.classList.add("authenticated");loadWorkspaces();
+ }catch(e){$("authStatus").textContent=e.message;}
+}
+async function gateAuth(kind){
+ const email=$("gateEmail").value.trim(), password=$("gatePassword").value;
+ if(!email||!password){$("gateStatus").textContent="Enter your email and password first.";return;}
+ $("gateStatus").textContent=kind==="signup"?"Creating your account…":"Signing in…";
+ try{const r=await fetch("/api/auth/"+kind,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({email,password})});const j=await r.json();if(!r.ok)throw Error(j.detail||"Authentication failed");
+ localStorage.setItem("an_token",j.token);localStorage.setItem("an_email",j.user.email);document.body.classList.add("authenticated");$("gateStatus").textContent="";$("authStatus").textContent="Signed in as "+j.user.email;loadWorkspaces();show(1);
+ }catch(e){$("gateStatus").textContent=e.message;}
+}
+function signOut(){localStorage.removeItem("an_token");localStorage.removeItem("an_email");document.body.classList.remove("authenticated");$("authStatus").textContent="Signed out";$("workspaceList").textContent="Sign in to see saved workspaces.";$("gateStatus").textContent="You have signed out.";}
+async function loadWorkspaces(){
+ if(!authToken()){$("workspaceList").textContent="Sign in to see saved workspaces.";return;}
+ try{const r=await fetch("/api/workspaces",{headers:{authorization:"Bearer "+authToken()}});const j=await r.json();if(!r.ok)throw Error(j.detail||"Could not load workspaces");
+ $("workspaceList").innerHTML=j.workspaces.length?j.workspaces.map(w=>`<div style="padding:8px;border-bottom:1px solid #263653"><b>${esc(w.name)}</b> <button class="sec" onclick="openWorkspace(${w.id})">Open</button><button class="sec" onclick="deleteWorkspace(${w.id})">Delete</button></div>`).join(""):"No saved workspaces yet.";
+ }catch(e){$("workspaceList").textContent=e.message;}
+}
+async function saveWorkspace(){
+ if(!authToken()){$("authStatus").textContent="Please sign in first.";return;}
+ const name=$("workspaceName").value.trim()||"My database project";
+ const data={csv:$("csv").value,target:$("target").value,dialect:$("dialect").value,fdSelections:currentFds,createdAt:new Date().toISOString()};
+ try{const r=await fetch("/api/workspaces",{method:"POST",headers:{"content-type":"application/json",authorization:"Bearer "+authToken()},body:JSON.stringify({name,data})});const j=await r.json();if(!r.ok)throw Error(j.detail||"Save failed");$("authStatus").textContent="Workspace saved.";loadWorkspaces();}catch(e){$("authStatus").textContent=e.message;}
+}
+async function openWorkspace(id){
+ try{const r=await fetch("/api/workspaces/"+id,{headers:{authorization:"Bearer "+authToken()}});const j=await r.json();if(!r.ok)throw Error(j.detail||"Open failed");$("csv").value=j.data.csv||"";$("workspaceName").value=j.name;if(j.data.target)$("target").value=j.data.target;if(j.data.dialect)$("dialect").value=j.data.dialect;previewData();show(1);$("authStatus").textContent="Opened "+j.name;}catch(e){$("authStatus").textContent=e.message;}
+}
+async function deleteWorkspace(id){if(!confirm("Delete this saved workspace?"))return;try{const r=await fetch("/api/workspaces/"+id,{method:"DELETE",headers:{authorization:"Bearer "+authToken()}});if(!r.ok)throw Error("Delete failed");loadWorkspaces();}catch(e){$("authStatus").textContent=e.message;}}
+async function testDb(){
+ if(!authToken()){$("dbStatus").textContent=" Sign in first.";return;}
+ const cfg={engine:$("dbEngine").value,host:$("dbHost").value,port:Number($("dbPort").value)||null,database:$("dbName").value,username:$("dbUser").value,password:$("dbPassword").value,ssl:$("dbSsl").checked};
+ $("dbStatus").textContent=" Connecting…";
+ try{const r=await fetch("/api/db/test",{method:"POST",headers:{"content-type":"application/json",authorization:"Bearer "+authToken()},body:JSON.stringify(cfg)});const j=await r.json();if(!r.ok)throw Error(j.detail||"Connection failed");$("dbStatus").textContent=" Connected: "+j.version;}catch(e){$("dbStatus").textContent=" "+e.message;}
+}
+async function askCopilot(){
+ if(!authToken()){$("copilotAnswer").textContent="Sign in to use the copilot.";return;}
+ const question=$("copilotQuestion").value.trim();if(!question)return;
+ $("copilotAnswer").textContent="Reviewing…";
+ try{const r=await fetch("/api/copilot",{method:"POST",headers:{"content-type":"application/json",authorization:"Bearer "+authToken()},body:JSON.stringify({question,csv_text:$("csv").value,context:{normalForm:$("summary").textContent}})});const j=await r.json();if(!r.ok)throw Error(j.detail||"Copilot request failed");$("copilotAnswer").textContent=j.answer+(j.actions.length?"\\n\\nSuggested validated actions:\\n"+j.actions.map(a=>"• "+a.label+" (confirmation required)").join("\\n"):"")+"\\n\\n"+j.note;}catch(e){$("copilotAnswer").textContent=e.message;}
+}
+
+mermaid.initialize({startOnLoad: false, theme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "default"});
+// Always begin at the dedicated login screen on a fresh page load.
+// The account itself and saved workspaces remain in the backend; only the local session token is cleared.
+localStorage.removeItem("an_token");
+localStorage.removeItem("an_email");
+document.body.classList.remove("authenticated");
+$("err").textContent = "";
+show(1);
+</script>
+</body>
+</html>
